@@ -15,41 +15,30 @@ var reload = browsersync.reload;
 
 //custom path url
 var SRC = './application/assets/js/*.js';
-var DEST = 'dist';
-
-gulp.task('serve', ['sass'], function() {
-    browsersync.init({
-        server: "./application/"
-    });
-    
-    gulp.watch(['./application/assets/img/**/*'], reload);
-    gulp.watch("./application/assets/js/**/*.js", ['jshint', 'jscompress', reload]);
-    gulp.watch("./application/assets/scss/**/*.scss", ['sass', reload]);
-    gulp.watch(['./application/*.*'], reload);
-});
-
+var DEST = 'production';
 
 
 gulp.task('sass', function(){
     gulp.src('./application/assets/scss/**/*.scss')
         .pipe(sass())
-        .pipe(gulp.dest('./application/assets/css'))
+        .pipe(gulp.dest('./application/assets/css/dev-css'))
 });
 
 gulp.task('imagemin', function() {
-    return gulp.src('./application/assets/img/*')
+    return gulp.src('./application/assets/img/**/*')
         .pipe(plumber())
         .pipe(imagemin({ progressive: true, optimizationLevel: 5 }))
-        .pipe(gulp.dest(DEST + '/images'));
+        .pipe(gulp.dest(DEST + '/assets/img/'));
 });
 
 gulp.task('cssMinify', function() {
-    return gulp.src('./application/assets/css/*')
+    return gulp.src('./application/assets/css/dev-css/*')
+        .pipe(concat('main.min.css'))
         .pipe(plumber())
         .pipe(cssMinify({
             keepSepecialComments: 1
         }))
-        .pipe(gulp.dest(DEST + '/css'))
+        .pipe(gulp.dest('./application/assets/css'))
 });
 
 
@@ -61,12 +50,12 @@ gulp.task('jscompress', function() {
     .pipe(notify({ message: 'Finished minifying JavaScript'}));
 });
 
-gulp.task('changed', function() {
-    return gulp.src(SRC)
-        .pipe(plumber())
-        .pipe(changed(DEST))
-        .pipe(gulp.dest(DEST + '/js'));
-});
+//gulp.task('changed', function() {
+//    return gulp.src(SRC)
+//        .pipe(plumber())
+//        .pipe(changed(DEST))
+//        .pipe(gulp.dest(DEST + '/js'));
+//});
 
 gulp.task('jshint', function() {
     gulp.src('./application/assets/js/main.js')
@@ -80,4 +69,34 @@ gulp.task('watch', function() {
 });
 
 
-gulp.task('default', ['serve']);
+gulp.task('serve', ['sass'], function() {
+    browsersync.init({
+        server: "./application/"
+    });
+    
+    gulp.watch(['./application/assets/img/**/*'], reload);
+    gulp.watch("./application/assets/js/**/*.js", ['jshint', 'jscompress', reload]);
+    gulp.watch("./application/assets/scss/**/*.scss", ['sass', reload]);
+    gulp.watch(['./application/*.*'], reload);
+});
+
+gulp.task('copy', function() {
+    return gulp.src([
+            'application/**',
+            '!application/assets/css/{dev-css,dev-css/**}',
+            '!application/assets/js/{dev-js,dev-js/**}',
+            '!application/assets/{scss,scss/**}',
+            '!application/assets/{img,img/**}',
+        ], {
+            dot: true
+        })
+        .on('error', notify.onError(function(error) {
+            return "Gulp Error: " + error.message;
+        }))
+        .pipe(gulp.dest('production'))
+
+});
+
+gulp.task('default', ['serve', 'cssMinify', 'imagemin']);
+
+gulp.task('prod', ['copy',  'imagemin']);
