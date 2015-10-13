@@ -70,7 +70,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('serve', ['sass'], function() {
-    connect.server({ base: 'application', port: 8010, keepalive: true, open: false});
+    connect.server({ base: 'application', port: 9001, keepalive: true, open: false});
     
     var proxy = httpProxy.createProxyServer({});
     
