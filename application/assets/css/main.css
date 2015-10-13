@@ -1,0 +1,65 @@
+/*----- FONTS-------
+----------------------
+@import "global/fonts";
+
+/*-----VARIABLES----
+-----------------------
+@import "global/variables";
+
+/*-----MIX-INS AND PLACEHOLDER -------
+-----------------------
+@import "global/mixins";
+@import "global/placeholders";
+
+/*-----SPRITES-------
+-----------------------
+@import "global/sprites";
+
+/*----- VENDORS-------
+----------------------
+@import "../vendors/bootstrap/css/bootstrap";*/
+/*-----LAYOUTS-------
+-----------------------
+@import "default/header";
+@import "default/footer";*/
+/*-----MODULES-------
+-----------------------*/
+/*-----PAGES-------
+-----------------------*/
+body {
+  font: 100% Helvetica, sans-serif;
+  color: #939393;
+  background: #000; }
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+
+nav li {
+  display: inline-block; }
+
+nav a {
+  display: block;
+  padding: 6px 12px;
+  text-decoration: none; }
+
+.box {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px; }
+
+.message, .success, .error, .warning {
+  border: 1px solid #ccc;
+  padding: 10px;
+  color: #333; }
+
+.success {
+  border-color: green; }
+
+.error {
+  border-color: red; }
+
+.warning {
+  border-color: yellow; }
