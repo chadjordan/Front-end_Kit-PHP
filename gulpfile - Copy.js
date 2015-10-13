@@ -10,9 +10,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var notify = require('gulp-notify');
 var sass = require('gulp-sass');
-var connect = require('gulp-connect-php');
-var httpProxy = require('http-proxy');
-var browsersync = require('browser-sync');
+var browsersync = require('browser-sync').create();
 var reload = browsersync.reload;
 
 //custom path url
@@ -69,27 +67,10 @@ gulp.task('watch', function() {
     gulp.watch(SRC, ['sass']);
 });
 
-gulp.task('serve', ['sass'], function() {
-    connect.server({ base: 'application', port: 8010, keepalive: true, open: false});
-    
-    var proxy = httpProxy.createProxyServer({});
-    
-    browsersync({
-        notify: false,
-        port  : 9000,
-        server: {
-            baseDir   : ['application'],
-            
-            middleware: function (req, res, next) {
-                var url = req.url;
 
-                if (!url.match(/^\/(styles|fonts)\//)) {
-                    proxy.web(req, res, { target: 'http://127.0.0.1:9001' });
-                } else {
-                    next();
-                }
-            }
-        }
+gulp.task('serve', ['sass'], function() {
+    browsersync.init({
+        server: "./application/"
     });
     
     gulp.watch(['./application/assets/img/**/*'], reload);
@@ -102,23 +83,6 @@ gulp.task('serve', ['sass'], function() {
         }))
     
 });
-
-
-//gulp.task('serve', ['sass'], function() {
-//    browsersync.init({
-//        server: "./application/"
-//    });
-//    
-//    gulp.watch(['./application/assets/img/**/*'], reload);
-//    gulp.watch("./application/assets/js/**/*.js", ['jshint', 'jscompress', reload]);
-//    gulp.watch("./application/assets/scss/**/*.scss", ['sass', reload]);
-//    gulp.watch(['./application/**/*.html'], reload);
-//    gulp.watch(['./application/**/*.php'], reload);
-//    return gulp.on('error', notify.onError(function(error) {
-//            return "Gulp Error: " + error.message;
-//        }))
-//    
-//});
 
 gulp.task('copy', function() {
     return gulp.src([
