@@ -1,0 +1,55 @@
+/* ---
+
+This scss file is for global layout style only for multiple use.
+
+----*/
+
+html, body{
+    height: 100%;
+    font: 400 14px/16px $primary-font; 
+}
+
+.container{
+    width: 100%;
+    margin: 0 auto;
+}
+
+.vertical-align{
+    font-size: 0;
+    
+    &:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+    }
+    
+    &-middle {
+        vertical-align: middle;
+        display: inline-block;
+        max-width: 100%;
+        font-size: 1rem;
+    }
+    
+    &-bottom{
+        vertical-align: bottom;
+        display: inline-block;
+        max-width: 100%;
+        font-size: 1rem;
+    }
+}
+
+h1{
+    font: 400 48px/50px $primary-font;
+}
+
+@media screen and (min-width: $desktop){
+    body{
+        padding-top: 80px;
+    }
+    
+    .container{
+        max-width: 1600px;
+        width: 100%;
+    }
+}

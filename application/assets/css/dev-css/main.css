@@ -1,11 +1,17 @@
 /*----- FONTS-------
-----------------------
-@import "global/fonts";
+----------------------*/
+/* ---
 
+This scss file is for global fonts only.
+
+----*/
 /*-----VARIABLES----
------------------------
-@import "global/variables";
+-----------------------*/
+/* ---
 
+This scss file is for global declaration values like colors, sizes and etc.
+
+----*/
 /*-----MIX-INS AND PLACEHOLDER -------
 -----------------------
 @import "global/mixins";
@@ -6489,47 +6495,133 @@ button.close {
 
 /*# sourceMappingURL=bootstrap.css.map */
 /*-----LAYOUTS-------
------------------------
-@import "default/header";
-@import "default/footer";*/
-/*-----MODULES-------
 -----------------------*/
+/* ---
+
+This scss file is for header style only.
+
+----*/
+.navbar-default {
+  background: #2b2b2b;
+  min-height: 60px;
+  padding: 8px 20px;
+  margin-bottom: 0; }
+  .navbar-default .container {
+    max-width: 1600px;
+    padding: 0;
+    margin: 0 auto;
+    width: 100%; }
+  .navbar-default .navbar-brand {
+    height: auto;
+    padding: 0;
+    color: #fff;
+    font: 300 24px "Open Sans", sans-serif;
+    margin-left: 0 !important; }
+    .navbar-default .navbar-brand img {
+      display: inline-block;
+      margin-right: 10px;
+      vertical-align: middle; }
+
+/* ---
+
+This scss file is for footer style only.
+
+----*/
+footer {
+  background: #2b2b2b;
+  min-height: 50px;
+  padding: 5px 0;
+  color: #fff; }
+  footer img {
+    vertical-align: baseline;
+    margin-right: 5px; }
+  footer span {
+    font-weight: 700; }
+
+/* ---
+
+This scss file is for global layout style only for multiple use.
+
+----*/
+html, body {
+  height: 100%;
+  font: 400 14px/16px "Open Sans", sans-serif; }
+
+.container {
+  width: 100%;
+  margin: 0 auto; }
+
+.vertical-align {
+  font-size: 0; }
+  .vertical-align:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle; }
+  .vertical-align-middle {
+    vertical-align: middle;
+    display: inline-block;
+    max-width: 100%;
+    font-size: 1rem; }
+  .vertical-align-bottom {
+    vertical-align: bottom;
+    display: inline-block;
+    max-width: 100%;
+    font-size: 1rem; }
+
+h1 {
+  font: 400 48px/50px "Open Sans", sans-serif; }
+
+@media screen and (min-width: 1024px) {
+  body {
+    padding-top: 80px; }
+  .container {
+    max-width: 1600px;
+    width: 100%; } }
+
 /*-----PAGES-------
 -----------------------*/
-body {
-  font: 100% Helvetica, sans-serif;
-  color: #939393;
-  background: #000; }
+.musthead {
+  width: 100%;
+  position: relative;
+  height: 100%;
+  background: url(../img/banners/images/musthead-home_06.png) no-repeat center/cover;
+  color: #fff;
+  text-align: center; }
+  .musthead-text {
+    max-width: 1135px;
+    margin: 0 auto;
+    text-shadow: 0px 3px 2px rgba(0, 0, 0, 0.5); }
+    .musthead-text h1 {
+      font-size: 64px;
+      font-weight: 700; }
+    .musthead-text p {
+      font: 300 36px/40px "Open Sans", sans-serif; }
 
-nav ul {
-  margin: 0;
-  padding: 0;
-  list-style: none; }
-
-nav li {
-  display: inline-block; }
-
-nav a {
+.branch-container {
+  width: 100%;
+  position: relative;
   display: block;
-  padding: 6px 12px;
-  text-decoration: none; }
+  background: url(../img/background/icons-bg_07.jpg) no-repeat center/cover;
+  color: #fff;
+  text-align: center;
+  padding: 20px 0; }
+  .branch-container .branch-row {
+    margin-bottom: 20px; }
+  .branch-container h2 {
+    font-size: 40px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 20px; }
+  .branch-container p {
+    font-size: 24px;
+    font-weight: 300; }
 
-.box {
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  border-radius: 10px; }
-
-.message, .success, .error, .warning {
-  border: 1px solid #ccc;
-  padding: 10px;
-  color: #333; }
-
-.success {
-  border-color: green; }
-
-.error {
-  border-color: red; }
-
-.warning {
-  border-color: yellow; }
+.things-life-container {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  font-size: 18px;
+  line-height: 22px; }
+  .things-life-container hr {
+    width: 30%;
+    display: block; }

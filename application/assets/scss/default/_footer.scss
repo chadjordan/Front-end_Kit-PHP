@@ -1,0 +1,21 @@
+/* ---
+
+This scss file is for footer style only.
+
+----*/
+
+footer{
+    background: $black;
+    min-height: 50px;
+    padding: 5px 0;
+    color: #fff;
+    
+    img{
+       vertical-align: baseline;
+        margin-right: 5px;
+    }
+    
+    span{
+        font-weight: 700;
+    }
+}

@@ -1,9 +1,9 @@
 /*----- FONTS-------
-----------------------
+----------------------*/
 @import "global/fonts";
 
 /*-----VARIABLES----
------------------------
+-----------------------*/
 @import "global/variables";
 
 /*-----MIX-INS AND PLACEHOLDER -------
@@ -20,12 +20,11 @@
 @import "../vendors/bootstrap/css/bootstrap";
 
 /*-----LAYOUTS-------
------------------------
-@import "default/header";
-@import "default/footer";*/
-
-/*-----MODULES-------
 -----------------------*/
+@import "default/header";
+@import "default/footer";
+@import "default/layout";
+
 
 /*-----PAGES-------
 -----------------------*/
