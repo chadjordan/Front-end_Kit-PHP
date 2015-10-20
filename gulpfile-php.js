@@ -78,13 +78,13 @@ gulp.task('serve', ['sass'], function() {
         notify: false,
         port  : 9000,
         server: {
-            baseDir   : ['application'],
+            baseDir   : 'application',
             
             middleware: function (req, res, next) {
                 var url = req.url;
 
                 if (!url.match(/^\/(styles|fonts)\//)) {
-                    proxy.web(req, res, { target: 'http://127.0.0.1:9001' });
+                    proxy.web(req, res, { target: 'http://localhost:9001' });
                 } else {
                     next();
                 }

@@ -5,10 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Bootstrap 101 Template</title>
+    <title>Front-end Starter Kit</title>
 
     <!-- Bootstrap -->
     <link href="assets/css/main.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,11 +21,125 @@
     <![endif]-->
   </head>
   <body>
-    <h1>Hello, world!</h1>
+
+
+        <nav class=" navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    
+                    <a class="navbar-brand" href="#">
+                        <img src="assets/img/logo/APD-logo.png"/>Front end Starter Kit
+                    </a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="active"><a href="#">Home</a>
+                        </li>
+                        <li><a href="#about">About</a>
+                        </li>
+                        <li><a href="#contact">Contact</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Action</a>
+                                </li>
+                                <li><a href="#">Another action</a>
+                                </li>
+                                <li><a href="#">Something else here</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Nav header</li>
+                                <li><a href="#">Separated link</a>
+                                </li>
+                                <li><a href="#">One more separated link</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+        
+        <section class="musthead vertical-align">
+            <div class="musthead-text vertical-align-middle">
+                <h1>Cultivated to deliver digital growth for our clients across Asia Pacific.</h1>
+                <p>Five of the region’s digital pioneers have evolved</p>
+                <p>to form a single 360-degree solution: APD.</p>
+            </div>
+        </section><!--/.musthead -->
+        
+        <section class="branch-container">
+            <div class="container">
+                <h2>APD: a simpler road to success.</h2>
+                <div class="row branch-row">
+                    <div class="col-md-2">
+                        <img src="assets/img/thumb-icons/au-icon_09.png"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="assets/img/thumb-icons/cn-icon_09.png"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="assets/img/thumb-icons/my-icon_09.png"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="assets/img/thumb-icons/nz-icon_09.png"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="assets/img/thumb-icons/ph-icon_09.png"/>
+                    </div>
+                    <div class="col-md-2">
+                        <img src="assets/img/thumb-icons/sg-icon_09.png"/>
+                    </div>
+                </div>
+                <p>Nearly 400 professionals operating from 10 offices across the Asia Pacific region.</p>
+            </div>
+        </section>
+        
+        <div class="container things-life-container">
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <img src="assets/img/img-1_13.jpg"/>
+                </div>
+                <div class="col-md-6">
+                    <h1>Lorem Ipsum</h1>
+                    <p>As in nature, digital lifecycles are infinite: constantly renewing, evolving and improving to grow bigger and stronger. We believe in continual improvement also known as Kaizen.</p>
+                </div>
+            </div>
+            <hr class="clearfix"/>
+            <div class="row">
+                <div class="col-md-6">                    
+                    <h1>Lorem Ipsum</h1>
+                    <p>As in nature, digital lifecycles are infinite: constantly renewing, evolving and improving to grow bigger and stronger. We believe in continual improvement also known as Kaizen.</p>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img src="assets/img/img-2_13.jpg"/>
+                </div>
+            </div>
+        </div>
+           
+        <footer>
+            <div class="container text-right">
+                <img src="assets/img/logo/footer-logo_17.png" />
+                <span>Asia Pacific Digital &#174;</span>
+            </div>
+        </footer>
+            
+        
+
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="assets/vendors/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/main.min.js"></script>
   </body>
 </html>

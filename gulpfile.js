@@ -8,14 +8,18 @@ var imagemin = require('gulp-imagemin');
 var cssMinify = require('gulp-minify-css');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var uncss = require('gulp-uncss');
 var notify = require('gulp-notify');
 var sass = require('gulp-sass');
 var browsersync = require('browser-sync').create();
 var reload = browsersync.reload;
+var glob = require('glob');
 
 //custom path url
 //var SRC = './application/assets/js/*.js';
 var DEST = 'production';
+
+
 
 
 gulp.task('sass', function(){
@@ -52,12 +56,38 @@ gulp.task('jscompress', function() {
     .pipe(gulp.dest('./application/assets/js'))
 });
 
-//gulp.task('changed', function() {
-//    return gulp.src(SRC)
-//        .pipe(plumber())
-//        .pipe(changed(DEST))
-//        .pipe(gulp.dest(DEST + '/js'));
-//});
+
+gulp.task('uncss', function () {
+    return gulp.src('./application/assets/css/main.min.css')
+        .pipe(concat('main.min.css'))
+        .pipe(uncss({
+            html: ['./application/index.html'],
+            ignore: [
+
+
+                        /\.open/,
+                         /(#|\.)fancybox(\-[a-zA-Z]+)?/,
+                        /(#|\.)active(\-[a-zA-Z]+)?/,
+                        /(#|\.)modal(\-[a-zA-Z]+)?/,
+                        // Bootstrap selectors added via JS
+                        /\w\.in/,
+                        ".fade",
+                        ".collapse",
+                        ".collapsing",
+                        /(#|\.)navbar(\-[a-zA-Z]+)?/,
+                        /(#|\.)dropdown(\-[a-zA-Z]+)?/,
+                        /(#|\.)(open)/,
+                        /^\.scroll(\-)?/,
+                        /^\.scrollbar(\-)?/,
+                       // currently only in a IE conditional, so uncss doesn't see it
+                        ".close",
+                        ".alert-dismissible"
+
+                    ]
+        }))
+        .pipe(gulp.dest(DEST + '/assets/dcss/'));
+});
+
 
 gulp.task('jshint', function() {
     gulp.src('./application/assets/js/main.js')
@@ -109,4 +139,4 @@ gulp.task('copy', function() {
 
 gulp.task('default', ['serve', 'imagemin']);
 
-gulp.task('prod', ['copy', 'imagemin']);
+gulp.task('prod', ['copy', 'imagemin', 'uncss']);
