@@ -137,19 +137,6 @@ gulp.task('copy', function() {
 
 });
 
-gulp.task('connect-sync', function() {
-  connect.server({}, function (){
-    browsersync({
-        base: 'application',
-      proxy: '127.0.0.1:8000'
-    });
-  });
- 
-  gulp.watch('application/*.php').on('change', function () {
-    browsersync.reload();
-  });
-});
-
 gulp.task('default', ['serve', 'cssMinify', 'imagemin']);
 
 gulp.task('prod', ['copy',  'imagemin']);

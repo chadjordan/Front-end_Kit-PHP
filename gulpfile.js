@@ -11,6 +11,7 @@ var jshint = require('gulp-jshint'),
     uncss = require('gulp-uncss'),
     notify = require('gulp-notify'),
     sass = require('gulp-sass'),
+    vendor = require('gulp-concat-vendor'),
     browsersync = require('browser-sync').create(),
     reload = browsersync.reload;
 
@@ -18,7 +19,7 @@ var jshint = require('gulp-jshint'),
 var SRC = './application/assets/',
     DEST = 'production';
 
-
+// CSS stuff
 gulp.task('sass', function(){
     gulp.src(SRC + 'scss/**/*.scss')
         .pipe(sass())
@@ -26,16 +27,6 @@ gulp.task('sass', function(){
             return "Gulp Error: " + error.message;
         }))
         .pipe(gulp.dest(SRC + 'css/dev-css'))
-});
-
-gulp.task('imagemin', function() {
-    return gulp.src(SRC + 'img/**/*')
-        .pipe(plumber())
-        .pipe(imagemin({
-            progressive: true,
-            optimizationLevel: 5
-        }))
-        .pipe(gulp.dest(DEST + '/assets/img/'));
 });
 
 gulp.task('cssMinify', function() {
@@ -47,18 +38,11 @@ gulp.task('cssMinify', function() {
         .pipe(gulp.dest(SRC + 'css'))
 });
 
-gulp.task('jscompress', function() {
-  return gulp.src(SRC + 'js/dev-js/*.js')
-    .pipe(concat('main.min.js')) //the name of the resulting file
-    .pipe(uglify())
-    .pipe(gulp.dest(SRC + 'js'))
-});
-
 gulp.task('uncss', function () {
     return gulp.src(SRC + 'css/main.min.css')
         .pipe(concat('main.min.css'))
         .pipe(uncss({
-            html: ['./application/index.html'],
+            html: ['./application/**/*.html'],
             ignore: [
                         /\.open/,
                          /(#|\.)fancybox(\-[a-zA-Z]+)?/,
@@ -79,9 +63,28 @@ gulp.task('uncss', function () {
                         ".alert-dismissible"
                     ]
         }))
-        .pipe(gulp.dest(DEST + '/assets/dcss/'));
+        .pipe(cssMinify({
+            keepSepecialComments: 1
+        }))
+        .pipe(gulp.dest(DEST + '/assets/css/'));
 });
 
+// JS stuff
+gulp.task('jscompress', function() {
+  return gulp.src(SRC + 'js/dev-js/*.js')
+    .pipe(concat('main.min.js')) //the name of the resulting file
+    .pipe(uglify())
+    .pipe(gulp.dest(SRC + 'js'))
+});
+
+gulp.task('vendorScripts', function() {
+  return gulp.src(['application/assets/vendors/**/*.min.js'])
+  .pipe(vendor('vendor.js'))
+  .pipe(gulp.dest('./application/assets/js/vendors-js/'))
+  .pipe(concat('vendor.min.js')) //the name of the resulting file
+    .pipe(uglify())
+    .pipe(gulp.dest(SRC + 'js'));
+});
 
 gulp.task('jshint', function() {
     gulp.src(SRC + 'js/main.js')
@@ -90,22 +93,33 @@ gulp.task('jshint', function() {
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('watch', function() {
-    gulp.watch(SRC, ['sass']);
-    gulp.watch(SRC, ['cssMinify']);
+gulp.task('imagemin', function() {
+    return gulp.src(SRC + 'img/**/*')
+        .pipe(plumber())
+        .pipe(imagemin({
+            progressive: true,
+            optimizationLevel: 5
+        }))
+        .pipe(gulp.dest(DEST + '/assets/img/'));
 });
 
-gulp.task('serve', ['sass', 'cssMinify'], function() {
-    browsersync.init({
-        server: "./application/"
-    });
+gulp.task('watch', ['sass', 'cssMinify', 'jscompress'], function() {
     gulp.watch([SRC + 'img/**/*'], reload);
-    gulp.watch(SRC + "js/**/*.js", ['jshint', 'jscompress', reload]);
+    gulp.watch(SRC + "js/**/*.js", ['jshint', reload]);
     gulp.watch(SRC + "scss/**/*.scss", ['sass', 'cssMinify', reload]);
     gulp.watch(SRC + "css/*.*", ['cssMinify', reload]);
+    gulp.watch(SRC + "vendors/**/*.js", ['vendorScripts', reload]);
     gulp.watch(['./application/**/*.html'], reload);
     gulp.watch(['./application/**/*.php'], reload);
     gulp.watch(['./application/*'], reload);
+});
+
+
+// gulp  task
+gulp.task('serve', ['watch'], function() {
+    browsersync.init({
+        server: "./application/"
+    });
     return gulp.on('error', notify.onError(function(error) {
             return "Gulp Error: " + error.message;
         }))
@@ -116,6 +130,7 @@ gulp.task('copy', function() {
             'application/**',
             '!application/assets/css/{dev-css,dev-css/**}',
             '!application/assets/js/{dev-js,dev-js/**}',
+            '!application/assets/js/{vendors-js,vendors-js/**}',
             '!application/assets/{scss,scss/**}',
             '!application/assets/{img,img/**}',
         ], {
@@ -128,6 +143,6 @@ gulp.task('copy', function() {
 
 });
 
-gulp.task('default', ['serve', 'imagemin']);
+gulp.task('default', ['serve', 'imagemin','vendorScripts', 'jscompress', 'jshint']);
 
 gulp.task('prod', ['copy', 'imagemin', 'uncss']);
