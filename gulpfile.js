@@ -12,8 +12,10 @@ var jshint = require('gulp-jshint'),
     notify = require('gulp-notify'),
     sass = require('gulp-sass'),
     vendor = require('gulp-concat-vendor'),
-    browsersync = require('browser-sync').create(),
+    browsersync = require('browser-sync'),
     reload = browsersync.reload;
+var connect = require('gulp-connect-php');
+var httpProxy = require('http-proxy');
 
 //custom path url
 var SRC = './application/assets/',
@@ -115,10 +117,38 @@ gulp.task('watch', ['sass', 'cssMinify', 'jscompress'], function() {
 });
 
 
-// gulp  task
+/* gulp  task
 gulp.task('serve', ['watch'], function() {
     browsersync.init({
         server: "./application/"
+    });
+    return gulp.on('error', notify.onError(function(error) {
+            return "Gulp Error: " + error.message;
+        }))
+});
+*/
+
+gulp.task('serve', ['watch'], function() {
+connect.server({ base: 'application', port: 9001, keepalive: true, open: false});
+    
+    var proxy = httpProxy.createProxyServer({});
+    
+    browsersync({
+        notify: false,
+        port  : 9000,
+        server: {
+            baseDir   : 'application',
+            
+            middleware: function (req, res, next) {
+                var url = req.url;
+
+                if (!url.match(/^\/(css|fonts)\//)) {
+                    proxy.web(req, res, { target: 'http://localhost:9001' });
+                } else {
+                    next();
+                }
+            }
+        }
     });
     return gulp.on('error', notify.onError(function(error) {
             return "Gulp Error: " + error.message;
@@ -143,6 +173,6 @@ gulp.task('copy', function() {
 
 });
 
-gulp.task('default', ['serve', 'imagemin','vendorScripts', 'jscompress', 'jshint']);
+gulp.task('default', ['serve', 'vendorScripts', 'jscompress', 'jshint']);
 
 gulp.task('prod', ['copy', 'imagemin', 'uncss']);
