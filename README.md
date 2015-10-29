@@ -1,5 +1,3 @@
-# Front-end_Kit
-
 
 Gulp.js - “Code over configuration” <br/>
         - It automates and enhances your workflow.<br/>
@@ -22,3 +20,4 @@ Integration to your project<br/>
   • Lastly install dependencies used by npm install –verbose<br/>
   • Then you can start your first project.<br/>
   • For the build files. Run gulp prod<br/>
+
