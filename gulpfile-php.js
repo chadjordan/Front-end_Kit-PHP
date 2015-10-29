@@ -1,76 +1,124 @@
 var gulp = require('gulp');
 
 //include plugins
-var jshint = require('gulp-jshint');
-var changed = require('gulp-changed');
-var plumber = require('gulp-plumber');
-var imagemin = require('gulp-imagemin');
-var cssMinify = require('gulp-minify-css');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var notify = require('gulp-notify');
-var sass = require('gulp-sass');
-var connect = require('gulp-connect-php');
-var httpProxy = require('http-proxy');
-var browsersync = require('browser-sync');
-var reload = browsersync.reload;
+var jshint = require('gulp-jshint'),
+    changed = require('gulp-changed'),
+    plumber = require('gulp-plumber'),
+    imagemin = require('gulp-imagemin'),
+    cssMinify = require('gulp-minify-css'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
+    uncss = require('gulp-uncss'),
+    notify = require('gulp-notify'),
+    sass = require('gulp-sass'),
+    vendor = require('gulp-concat-vendor'),
+    browsersync = require('browser-sync'),
+    reload = browsersync.reload,
+    connect = require('gulp-connect-php'),
+    httpProxy = require('http-proxy');
 
 //custom path url
-var SRC = './application/assets/js/*.js';
-var DEST = 'production';
+var SRC = './application/assets/',
+    DEST = 'production';
 
-
+// CSS stuff
 gulp.task('sass', function(){
-    gulp.src('./application/assets/scss/**/*.scss')
+    gulp.src(SRC + 'scss/**/*.scss')
         .pipe(sass())
-        .pipe(gulp.dest('./application/assets/css/dev-css'))
-});
-
-gulp.task('imagemin', function() {
-    return gulp.src('./application/assets/img/**/*')
-        .pipe(plumber())
-        .pipe(imagemin({ progressive: true, optimizationLevel: 5 }))
-        .pipe(gulp.dest(DEST + '/assets/img/'));
+        .on('error', notify.onError(function(error) {
+            return "Gulp Error: " + error.message;
+        }))
+        .pipe(gulp.dest(SRC + 'css/dev-css'))
 });
 
 gulp.task('cssMinify', function() {
-    return gulp.src('./application/assets/css/dev-css/*')
+    return gulp.src(SRC + 'css/dev-css/*')
         .pipe(concat('main.min.css'))
-        .pipe(plumber())
         .pipe(cssMinify({
             keepSepecialComments: 1
         }))
-        .pipe(gulp.dest('./application/assets/css'))
+        .pipe(gulp.dest(SRC + 'css'))
 });
 
+gulp.task('uncss', function () {
+    return gulp.src(SRC + 'css/main.min.css')
+        .pipe(concat('main.min.css'))
+        .pipe(uncss({
+            html: ['./application/**/*.html'],
+            ignore: [
+                        /\.open/,
+                         /(#|\.)fancybox(\-[a-zA-Z]+)?/,
+                        /(#|\.)active(\-[a-zA-Z]+)?/,
+                        /(#|\.)modal(\-[a-zA-Z]+)?/,
+                        // Bootstrap selectors added via JS
+                        /\w\.in/,
+                        ".fade",
+                        ".collapse",
+                        ".collapsing",
+                        /(#|\.)navbar(\-[a-zA-Z]+)?/,
+                        /(#|\.)dropdown(\-[a-zA-Z]+)?/,
+                        /(#|\.)(open)/,
+                        /^\.scroll(\-)?/,
+                        /^\.scrollbar(\-)?/,
+                       // currently only in a IE conditional, so uncss doesn't see it
+                        ".close",
+                        ".alert-dismissible"
+                    ]
+        }))
+        .pipe(cssMinify({
+            keepSepecialComments: 1
+        }))
+        .pipe(gulp.dest(DEST + '/assets/css/'));
+});
 
+// JS stuff
 gulp.task('jscompress', function() {
-  return gulp.src('./application/assets/js/dev-js/*.js')
+  return gulp.src(SRC + 'js/dev-js/*.js')
     .pipe(concat('main.min.js')) //the name of the resulting file
     .pipe(uglify())
-    .pipe(gulp.dest('./application/assets/js'))
+    .pipe(gulp.dest(SRC + 'js'))
 });
 
-//gulp.task('changed', function() {
-//    return gulp.src(SRC)
-//        .pipe(plumber())
-//        .pipe(changed(DEST))
-//        .pipe(gulp.dest(DEST + '/js'));
-//});
+gulp.task('vendorScripts', function() {
+  return gulp.src(['application/assets/vendors/**/*.min.js'])
+  .pipe(vendor('vendor.js'))
+  .pipe(gulp.dest('./application/assets/js/vendors-js/'))
+  .pipe(concat('vendor.min.js')) //the name of the resulting file
+    .pipe(uglify())
+    .pipe(gulp.dest(SRC + 'js'));
+});
 
 gulp.task('jshint', function() {
-    gulp.src('./application/assets/js/main.js')
+    gulp.src(SRC + 'js/main.js')
         .pipe(plumber())
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('watch', function() {
-    gulp.watch(SRC, ['sass']);
+gulp.task('imagemin', function() {
+    return gulp.src(SRC + 'img/**/*')
+        .pipe(plumber())
+        .pipe(imagemin({
+            progressive: true,
+            optimizationLevel: 5
+        }))
+        .pipe(gulp.dest(DEST + '/assets/img/'));
 });
 
-gulp.task('serve', ['sass'], function() {
-    connect.server({ base: 'application', port: 9001, keepalive: true, open: false});
+gulp.task('watch', ['sass', 'cssMinify', 'jscompress'], function() {
+    gulp.watch([SRC + 'img/**/*'], reload);
+    gulp.watch(SRC + "js/**/*.js", ['jshint', reload]);
+    gulp.watch(SRC + "scss/**/*.scss", ['sass', 'cssMinify', reload]);
+    gulp.watch(SRC + "css/*.*", ['cssMinify', reload]);
+    gulp.watch(SRC + "vendors/**/*.js", ['vendorScripts', reload]);
+    gulp.watch(['./application/**/*.html'], reload);
+    gulp.watch(['./application/**/*.php'], reload);
+    gulp.watch(['./application/*'], reload);
+});
+
+
+gulp.task('serve', ['watch'], function() {
+connect.server({ base: 'application', port: 9001, keepalive: true, open: false});
     
     var proxy = httpProxy.createProxyServer({});
     
@@ -83,7 +131,7 @@ gulp.task('serve', ['sass'], function() {
             middleware: function (req, res, next) {
                 var url = req.url;
 
-                if (!url.match(/^\/(styles|fonts)\//)) {
+                if (!url.match(/^\/(css|fonts)\//)) {
                     proxy.web(req, res, { target: 'http://localhost:9001' });
                 } else {
                     next();
@@ -91,40 +139,17 @@ gulp.task('serve', ['sass'], function() {
             }
         }
     });
-    
-    gulp.watch(['./application/assets/img/**/*'], reload);
-    gulp.watch("./application/assets/js/**/*.js", ['jshint', 'jscompress', reload]);
-    gulp.watch("./application/assets/scss/**/*.scss", ['sass', reload]);
-    gulp.watch(['./application/**/*.html'], reload);
-    gulp.watch(['./application/**/*.php'], reload);
     return gulp.on('error', notify.onError(function(error) {
             return "Gulp Error: " + error.message;
         }))
-    
 });
-
-
-//gulp.task('serve', ['sass'], function() {
-//    browsersync.init({
-//        server: "./application/"
-//    });
-//    
-//    gulp.watch(['./application/assets/img/**/*'], reload);
-//    gulp.watch("./application/assets/js/**/*.js", ['jshint', 'jscompress', reload]);
-//    gulp.watch("./application/assets/scss/**/*.scss", ['sass', reload]);
-//    gulp.watch(['./application/**/*.html'], reload);
-//    gulp.watch(['./application/**/*.php'], reload);
-//    return gulp.on('error', notify.onError(function(error) {
-//            return "Gulp Error: " + error.message;
-//        }))
-//    
-//});
 
 gulp.task('copy', function() {
     return gulp.src([
             'application/**',
             '!application/assets/css/{dev-css,dev-css/**}',
             '!application/assets/js/{dev-js,dev-js/**}',
+            '!application/assets/js/{vendors-js,vendors-js/**}',
             '!application/assets/{scss,scss/**}',
             '!application/assets/{img,img/**}',
         ], {
@@ -138,18 +163,21 @@ gulp.task('copy', function() {
 });
 
 gulp.task('connect-sync', function() {
-  connect.server({}, function (){
+  connect.server({ base: 'application', port: 8010, keepalive: true});
+ });
+
+gulp.task('sync',['connect-sync'], function() {
     browsersync({
-        base: 'application',
-      proxy: '127.0.0.1:8000'
+        proxy: '127.0.0.1:8010',
+        port: 8080,
+        open: true,
+        notify: false
     });
-  });
- 
-  gulp.watch('application/*.php').on('change', function () {
-    browsersync.reload();
-  });
+    gulp.watch(['./application/**/*.php'], reload);
 });
+    
 
-gulp.task('default', ['serve', 'cssMinify', 'imagemin']);
 
-gulp.task('prod', ['copy',  'imagemin']);
+gulp.task('default', ['serve', 'vendorScripts', 'jscompress', 'jshint']);
+
+gulp.task('prod', ['copy', 'imagemin', 'uncss']);
