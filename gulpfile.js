@@ -173,6 +173,22 @@ gulp.task('copy', function() {
 
 });
 
+gulp.task('connect-sync', function() {
+  connect.server({ base: 'application', port: 8010, keepalive: true});
+ });
+
+gulp.task('sync',['connect-sync'], function() {
+    browsersync({
+        proxy: '127.0.0.1:8010',
+        port: 8080,
+        open: true,
+        notify: false
+    });
+    gulp.watch(['./application/**/*.php'], reload);
+});
+    
+
+
 gulp.task('default', ['serve', 'vendorScripts', 'jscompress', 'jshint']);
 
 gulp.task('prod', ['copy', 'imagemin', 'uncss']);
